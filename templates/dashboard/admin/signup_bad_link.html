@@ -1,0 +1,44 @@
+{% extends "dashboard/admin/layout.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Password reset" %}{% endblock %}
+
+{% block body_css_class %}dashboard-password-reset-page{% endblock %}
+
+{% block main %}
+    <main>
+        <div class="container">
+            <div class="dashboard-password-reset">
+                <p class="title small">{% trans "Error" %}</p>
+
+                <div class="form">
+                    <p class="sub-title">
+                        {% trans "You have followed invalid or expired link." %}
+                    </p>
+
+                    <br>
+
+                    <p class="text">
+                        {% trans "We're sorry, but the link you have followed is not working." %}
+                    </p>
+
+                    <br>
+
+                    {% if user %}
+                    <p class="text info">
+                        {% blocktrans with a_o='<a href="/dashboard/login">' a_c='</a>' %}
+                            Please try {{ a_o }}logging in{{ a_c }} to your account.
+                        {% endblocktrans %}
+                    </p>
+                    {% else %}
+                    <p class="text info">
+                        {% blocktrans with a_o='<a href="mailto:tokensale@liveedu.tv">' a_c='</a>' %}
+                            Please feel free to {{ a_o }}contact our support team{{ a_c }}.
+                        {% endblocktrans %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

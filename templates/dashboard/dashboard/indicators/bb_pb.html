@@ -1,0 +1,69 @@
+<ul>
+    <li>If the closing price is equal to the upper Bollinger Band Opens in a new window value, Percent B would be 100 (percent).</li>
+    <li>If the closing price is above the upper Bollinger Band, Percent B would be greater than 100.</li>
+    <li>If the closing price is equal to the moving average, Percent B is 50 percent.</li>
+    <li>If the closing price is equal to the lower Bollinger Band, Percent B would be zero.</li>
+    <li>If the closing price is below the lower band, Percent B would be negative.</li>
+    <li>During up trends watch for %B to reach oversold levels for possible buying opportunities.</li>
+    <li>During down trends watch for %B to reach overbought levels for possible short sale opportunities.</li>
+</ul>
+
+<div class="row paramrow">
+    <div class="col-sm-5 text-center">
+        <label for="overbought">
+            Overbought
+        </label>
+    </div>
+    <div class="col-sm-5 text-center">
+        <input id="overbought" name="ovb" value="{{ SignalInputs.ovb }}"/>
+    </div>
+</div>
+
+<div class="row paramrow mb-4">
+    <div class="col-sm-5 text-center">
+        <label for="oversold">
+            Oversold
+        </label>
+    </div>
+    <div class="col-sm-5 text-center">
+        <input id="oversold" name="ovs" value="{{ SignalInputs.ovs }}"/>
+    </div>
+</div>
+
+<button type="button" class="btn_signal" data-letter="{{ tii_letter }}">Trigger Signal</button>
+<button type="button" class="btn_optimal" data-letter="{{ tii_letter }}">Optimal Setting</button>
+
+<div class="row mt-4">
+    <div class="col-sm-12" id="winlossratio">
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-sm-12" id="bestparams_result">
+    </div>
+</div>
+<script>
+$('.btn_signal').click(function () {
+    $.ajax({
+        url: '/triggersignal/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}', ovb: $('#overbought').val(), ovs: $('#oversold').val()},
+        success: function(data) {
+            widget.createSignalShape(data.signal_graph);
+            $('#winlossratio').text('Win/Loss Ratio: ' + data.traderet.winlossratio);
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+
+$('.btn_optimal').click(function () {
+    $('#loadingOptTrade').removeClass("d-none");
+    $.ajax({
+        url: '/optimaltrade/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}'},
+        success: function(data) {
+            $('#bestparams_result').html(data.html);
+            $('#loadingOptTrade').addClass("d-none");
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+</script>

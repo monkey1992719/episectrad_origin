@@ -1,0 +1,222 @@
+.upGreenArrow{
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 4.5px 12px 4.5px;
+    border-color: transparent transparent #00ff00 transparent;
+ }
+   
+ .downRedArrow{
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 4.5px 0 4.5px;
+    border-color: #ff0000 transparent transparent transparent;
+ }
+ 
+ .upArrow{
+   position: relative;
+   top: -15px;
+   left: -10px;
+   width:0;
+   height:0;
+   border: 6px solid transparent;
+   border-bottom-color: #00ff00;
+ }
+ .upArrow:after{
+   position: absolute;
+   content: '';
+   top: 20px;
+   left: -3px;
+   width: 6px;
+   height: 10px;
+   background: #00ff00;
+ }
+ 
+ .downArrow{
+   position: relative;
+   top: 18px;
+   left: -10px;
+   width: 0;
+   height: 0;
+   border: 6px solid transparent;
+   border-top-color: #ff0000;
+ }
+ .downArrow:after{
+   position: absolute;
+   content: '';
+   top: -15px;
+   left: -3px;
+   width: 6px;
+   height: 10px;
+   background: #ff0000;
+ }
+ 
+ 
+ /* d3 candle stick start */
+ 
+ .axis path,
+ .axis line {
+     fill: none;
+     stroke: black;
+     shape-rendering: crispEdges;
+ }
+
+ .grid { stroke-opacity: .1; }
+ 
+ .axis text {
+     position: relative;
+     font-family: 'Open Sans', sans-serif;
+     font-size: 11px;
+     fill: black;
+     z-index: -1;
+ }
+ 
+ /* d3 candle stick end */
+ 
+ body {
+   background-color: white;
+ }
+
+ .bullish { fill: #26a69a; stroke: #26a69a;}
+ .bearish { fill: #ef5350; stroke: #ef5350;}
+
+ .nostroke { stroke: none!important;}
+
+ .kagis { stroke-linecap : square;}
+
+ .volumes { stroke-opacity: 0.5; fill-opacity: 0.3;}
+
+.shapes rect { fill: #153899; stroke: #153899; stroke-linecap : square; stroke-width: 1; fill-opacity: .3; }
+.shapes ellipse { fill: #9f9f22; stroke: #9f9f22; stroke-width: 1; fill-opacity: .3; }
+
+.xbands rect { fill: darkgrey; fill-opacity: 0; stroke-opacity: 0; pointer-events: all; shape-rendering: crispEdges; }
+.xband line { stroke: darkgrey; stroke-opacity: 0; pointer-events: all; shape-rendering: crispEdges; stroke-width: 1; stroke-dasharray: 4; }
+.xband .hoved { stroke-opacity: 1; }
+
+.yband line { stroke: darkgrey; stroke-opacity: 0; pointer-events: all; shape-rendering: crispEdges; stroke-width: 1; stroke-dasharray: 4; }
+.yband .hoved { stroke-opacity: 1; }
+
+.closebutton rect { fill : black; fill-opacity: .7; pointer-events: all;}
+.closebutton text { fill : white; }
+
+.fillbullish { fill: #26a69a;}
+.fillbearish { fill: #ef5350;}
+
+/* .AO { fill: green; stroke: green; stroke-width : 1; } */
+.AO { fill-opacity: 0.5; stroke-opacity: 0.5;}
+.acc { fill: rgb(255, 153, 0); stroke: rgb(255, 153, 0); stroke-width : 1; }
+
+.aroon_up { fill: rgb(0, 132, 255); stroke: rgb(0, 132, 255); stroke-width : 1; }
+.aroon_down { fill: rgb(255, 187, 0); stroke: rgb(255, 187, 0); stroke-width : 1; }
+
+.adi { fill: rgb(255, 187, 0); stroke: rgb(255, 187, 0); stroke-width : 1; }
+.ATR { fill: rgb(153, 37, 21); stroke: rgb(153, 37, 21); stroke-width : 1; }
+.cmo { fill: rgb(0, 132, 255); stroke: rgb(0, 132, 255); stroke-width : 1; }
+.MOM { fill: rgb(146, 179, 56); stroke: rgb(146, 179, 56); stroke-width : 1; }
+.CC { fill: rgb(78, 147, 226); stroke: rgb(78, 147, 226); stroke-width : 1; }
+
+.mfi_ { fill: rgb(235, 102, 25); stroke: rgb(235, 102, 25); stroke-width : 1; }
+.mfi_sma { fill: rgb(100, 100, 100); stroke: rgb(100, 100, 100); stroke-width : 1; }
+.mfi_high { fill: rgb(0, 255, 0); stroke: rgb(0, 255, 0); stroke-width : 1; }
+.mfi_mid { fill: rgb(100, 100, 100); stroke: rgb(100, 100, 100); stroke-width : 1; }
+.mfi_low { fill: rgb(255, 0, 0); stroke: rgb(255, 0, 0); stroke-width : 1; }
+
+.PO { fill: rgb(0, 133, 77); stroke: rgb(0, 133, 77); stroke-width : 1; }
+.RSI { fill: rgb(162, 0, 255); stroke: rgb(162, 0, 255); stroke-width : 1; }
+
+.STOK { fill: rgb(0, 132, 255); stroke: rgb(0, 132, 255); stroke-width : 1; }
+.STOD { fill: rgb(233, 77, 15); stroke: rgb(233, 77, 15); stroke-width : 1; }
+
+.STCHRSI { fill: rgb(0, 132, 255); stroke: rgb(0, 132, 255); stroke-width : 1; }
+.TSI { fill: rgb(0, 132, 255); stroke: rgb(0, 132, 255); stroke-width : 1; }
+.uo { fill: rgb(209, 0, 52); stroke: rgb(209, 0, 52); stroke-width : 1; }
+.WPR { fill: rgb(0, 132, 255); stroke: rgb(0, 132, 255); stroke-width : 1; }
+.CCI { fill: rgb(131, 97, 3); stroke: rgb(131, 97, 3); stroke-width : 1; }
+
+.adx_pos { fill: rgb(0, 79, 182); stroke: rgb(0, 79, 182); stroke-width : 1; }
+.adx_neg { fill: rgb(235, 102, 25); stroke: rgb(235, 102, 25); stroke-width : 1; }
+
+.dema { fill: rgb(39, 85, 21); stroke: rgb(39, 85, 21); stroke-width : 1; }
+.hma { fill: rgb(69, 6, 128); stroke: rgb(69, 6, 128); stroke-width : 1; }
+
+.ic_a { fill: rgb(74, 145, 68); stroke: rgb(74, 145, 68); stroke-width : 1; }
+.ic_b { fill: rgb(255, 0, 0); stroke: rgb(255, 0, 0); stroke-width : 1; }
+
+.KST { fill: rgb(30, 155, 107); stroke: rgb(30, 155, 107); stroke-width : 1; }
+.KST_SIG { fill: rgb(199, 43, 43); stroke: rgb(199, 43, 43); stroke-width : 1; }
+
+.SMA12 { fill: rgb(255, 187, 0); stroke: rgb(255, 187, 0); stroke-width : 1; }
+.SMA26 { fill: rgb(255, 187, 0); stroke: rgb(255, 187, 0); stroke-width : 1; }
+
+
+.MACD { fill: rgb(73, 116, 83); stroke: rgb(73, 116, 83); stroke-width : 1; }
+.MACDSig { fill: rgb(141, 88, 105); stroke: rgb(141, 88, 105); stroke-width : 1; }
+
+.MACDHistogram { fill-opacity: 0.5; stroke-opacity: 0.5;}
+
+.mass_index { fill: rgb(92, 149, 187); stroke: rgb(92, 149, 187); stroke-width : 1; }
+.ema { fill: rgb(50, 82, 141); stroke: rgb(50, 82, 141); stroke-width : 1; }
+.sma { fill: rgb(145, 82, 247); stroke: rgb(145, 82, 247); stroke-width : 1; }
+.wma { fill: rgb(48, 23, 119); stroke: rgb(48, 23, 119); stroke-width : 1; }
+.smooth_ma { fill: rgb(78, 170, 70); stroke: rgb(78, 170, 70); stroke-width : 1; }
+.TRIX { fill: rgb(129, 46, 60); stroke: rgb(129, 46, 60); stroke-width : 1; }
+.tema { fill: rgb(15, 97, 39); stroke: rgb(15, 97, 39); stroke-width : 1; }
+
+.voi_pos { fill: rgb(75, 128, 189); stroke: rgb(75, 128, 189); stroke-width : 1; }
+.voi_neg { fill: rgb(211, 76, 166); stroke: rgb(211, 76, 166); stroke-width : 1; }
+
+.UPRBB { fill: rgb(40, 221, 245); stroke: rgb(40, 221, 245); stroke-width : 1; }
+.MIDBB { fill: rgb(87, 143, 23); stroke: rgb(87, 143, 23); stroke-width : 1; }
+.LWRBB { fill: rgb(97, 43, 19); stroke: rgb(97, 43, 19); stroke-width : 1; }
+
+.bb_pb { fill: rgb(55, 90, 187); stroke: rgb(55, 90, 187); stroke-width : 1; }
+.bb_bw { fill: rgb(32, 100, 91); stroke: rgb(32, 100, 91); stroke-width : 1; }
+
+.dc_hband { fill: rgb(26, 95, 185); stroke: rgb(26, 95, 185); stroke-width : 1; }
+.dc_lband { fill: rgb(189, 163, 16); stroke: rgb(189, 163, 16); stroke-width : 1; }
+
+.kc_central { fill: rgb(48, 177, 236); stroke: rgb(48, 177, 236); stroke-width : 1; }
+.kc_hband { fill: rgb(48, 177, 236); stroke: rgb(48, 177, 236); stroke-width : 1; }
+.kc_lband { fill: rgb(48, 177, 236); stroke: rgb(48, 177, 236); stroke-width : 1; }
+
+.cmf { fill: rgb(250, 64, 64); stroke: rgb(250, 64, 64); stroke-width : 1; }
+.ch_osc { fill: rgb(87, 143, 23); stroke: rgb(87, 143, 23); stroke-width : 1; }
+.eom_14 { fill: rgb(87, 143, 23); stroke: rgb(87, 143, 23); stroke-width : 1; }
+.obv { fill: rgb(61, 59, 104); stroke: rgb(61, 59, 104); stroke-width : 1; }
+
+.PVI { fill: rgb(42, 105, 17); stroke: rgb(42, 105, 17); stroke-width : 1; }
+.NVI { fill: rgb(182, 79, 61); stroke: rgb(182, 79, 61); stroke-width : 1; }
+
+.vo { fill: rgb(92, 108, 121); stroke: rgb(28, 92, 145); stroke-width : 1; }
+
+.adr { fill: rgb(0, 0, 0); stroke: rgb(0, 0, 0); stroke-width : 1; }
+
+.bop { fill: rgb(0, 0, 0); stroke: rgb(0, 0, 0); stroke-width : 1; }
+
+
+.signal-ovbs {fill: red; stroke: red; stroke-width : 1; }
+.signal-ovbe {fill: green; stroke: green; stroke-width : 1; }
+.signal-ovss {fill: red; stroke: red; stroke-width : 1; }
+.signal-ovse {fill: green; stroke: green; stroke-width : 1; }
+
+.signal-threshold-ovb {fill: green; stroke: green; stroke-width : 1; }
+.signal-threshold-ovs {fill: red; stroke: red; stroke-width : 1; }
+
+.focusbandtitle rect { 
+  position: absolute; 
+  fill: #4c525e;
+  fill-opacity: 0;
+  z-index: 9999;
+}
+
+.focusbandtitle text {
+      position: absolute; 
+      font-family: 'Open Sans', sans-serif;
+      font-size: 11px;
+      fill: white;
+      fill-opacity: 0;
+      z-index: 10000;
+}
+
+.focusbandtitle .hoved { fill-opacity: 1; }

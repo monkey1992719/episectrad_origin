@@ -1,0 +1,40 @@
+<h6 class="card-title text-center">Best Parameters</h6>
+<div class="table-responsive">
+    {% for bt in bestparams %}
+    <table class="table" id="pmtbl_{{ bt.backtest_id }}">
+      <thead>
+        <tr>
+          <th>{% autoescape off %}{{ bt.title }}{% endautoescape %}</th>
+          <th><a href='#' class="applyparam" data-id="{{ bt.backtest_id }}">Apply</a></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for param in bt.params %}
+        <tr data-param="{{param.parameter}}" data-value="{{param.value}}">
+          <td>{{param.parameter}}</td>
+          <td>{{param.value}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endfor %}
+</div>
+
+<script>
+    $('.applyparam').click( function () {
+        var backtest_id = $(this).data("id");
+        var params = {};
+        $('#pmtbl_' + backtest_id + ' tbody tr').each( function () {
+            params[$(this).data("param")] = $(this).data("value");
+        });
+        params['backtest_id'] = backtest_id;
+        params['dashboard_id'] = dashboard_id;
+        $.ajax({
+            url:'/setbestparameters',
+            data:params,
+            success:function(data){
+                widget.setTradingIndicator(data.trade.indicators, data.trade.tradeid, data.trade.with_main);
+            }
+        });
+    });
+</script>

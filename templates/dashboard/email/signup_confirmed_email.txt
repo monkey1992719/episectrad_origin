@@ -1,0 +1,9 @@
+Hi,
+
+Thank you for confirming your email. You have successfully registered for the Education Ecosystem.
+
+Access your dashboard: {{ protocol }}://{{ domain }}{% url 'dashboard' %}
+
+------------
+LiveEdu team
+E-mail: {{ contact_email }}

@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<base target="_blank">
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}EpisecTrading{% endblock %}</title>
+	<!--[if !mso]><!-- -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,700" rel="stylesheet">
+	<!--<![endif]-->
+	<style>
+		* { padding: 0px; margin: 0px; }
+		table { border-collapse: collapse; }
+		td { font-family:'Open Sans', arial, sans-serif; color:#58595b; }
+		img { width: 100%; max-width: 100%; }
+
+		.container { width: 600px; }
+		.col1 { width: 8.333333%; } /* 50px */
+		.col2 { width: 16.666667%; } /* 100px */
+		.col3 { width: 25%; } /* 150px */
+		.col4 { width: 33.333333%; } /* 200px */
+		.col5 { width: 41.666667%; } /* 250px */
+		.col6 { width: 50%; } /* 300px */
+		.col7 { width: 58.333333%; } /* 350px */
+		.col8 { width: 66.666667%; } /* 400px */
+		.col9 { width: 75%; } /* 450px */
+		.col10 { width: 83.333333%; } /* 500px */
+		.col11 { width: 91.666667%; } /* 550px */
+		.col12 { width: 100%; } /* 600px */
+		@media screen and (max-width: 640px) {
+			.container { width: 100% !important; }
+            .fw { width: 100% !important; }
+			.w90 { width: 130px !important; }
+			.fs18 { font-size: 18px !important; }
+            .text-left { text-align: left !important; }
+            .pb14 { padding-bottom: 14px !important;}
+			.plr20 { padding-left: 20px !important; padding-right: 20px !important; }
+			.ptb15 { padding-top: 15px !important; padding-bottom: 15px !important; }
+
+		}
+	</style>
+</head>
+<body style="background-color:#161a1e; margin:0; padding:0; text-align:left; -webkit-text-size-adjust:none;">
+	<center><!--[if gte mso 9]><table width="640" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
+	<table class="container" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:calc(640px); margin:0 auto;" bgcolor="#161a1e">
+	<tr><td width="100%" style="text-align: left; font-family:'Open Sans', arial, sans-serif; line-height:1.4; color:#58595b; -webkit-text-size-adjust:none;"><table width="100%" cellpadding="0" cellspacing="0" border="0" style="min-width:100%;">
+
+		{% block header %}
+		<tr>
+			<td width="100%" style="min-width:100%;">
+				<table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#161a1e">
+					<tr>
+						<td width="100%" align="left" valign="top" style="min-width: 100%; padding:0px 30px 0px 30px;" class="plr20">
+							<table width="100%" cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td align="left" width="173px" style="padding-right:12px;" class="w90">
+                                        <a href="https://127.0.0.1:8000/" style="font-size: 24px; font-weight: 600;  color:#ffffff;">EpisecTrading</a>
+                                    </td>                                    
+								</tr>
+							</table>
+						</td>
+				</table>
+			</td>
+		</tr>
+		{% endblock %}
+
+		<tr>
+			<td width="100%" style="min-width:100%;">
+				<table width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff">
+					<tr>
+						<td width="100%" valign="top" style="min-width: 100%; padding:0px 30px 0px 30px;" class="plr20">
+							<table width="100%" cellpadding="0" cellspacing="0" border="0">
+								<!-- spacer: 50 -->
+								<tr><td align="left" height="50">&nbsp;</td></tr>
+
+								{% block content %}
+								{% endblock %}
+
+								<!-- spacer: 30 -->
+								<tr><td align="left" height="30">&nbsp;</td></tr>
+
+								<!-- spacer: 30 -->
+								<tr><td align="left" height="30">&nbsp;</td></tr>
+
+								<tr>
+									<td align="left" style="padding:20px 0px 0px 0px;">
+										<span style="font-size:18px; font-weight:700;">
+                                            EpisecTrading team
+										</span>
+									</td>
+								</tr>
+
+								<!-- spacer: 50 -->
+								<tr><td align="left" height="50">&nbsp;</td></tr>
+							</table>
+						</td>
+				</table>
+			</td>
+		</tr>
+		
+		{% block footer %}
+        <tr>
+			<td width="100%" style="min-width:100%;">
+				<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#161a1e">
+					<tr>
+						<td width="100%" valign="top" style="min-width: 100%; padding:16px 30px 16px 30px;" class="plr20">
+							<!--[if gte mso 9]><table width="100%" cellpadding="0" cellspacing="0"><tr><td width="50%" valign="top"><![endif]-->
+							<table class="ol col6 fw" width="100%" align="left" style="width: calc(50%);" cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td align="center" valign="top" width="100%" style="padding:0px 0px 0px 0px;">
+										<table width="100%" cellspacing="0" cellpadding="0" border="0">
+											<tr>
+                                                <td align="left" style="padding:0px 0px 0px 0px;">
+                                                    <span style="font-size:11px; color:#f1f1f6;">
+                                                        E-mail: <a href="mailto:{{ contact_email }}" style="color:#f4515e; font-style:italic;">{{ contact_email }}</a>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="left" style="padding:4px 0px 0px 0px;">
+                                                    <span style="font-size:11px; color:#808080;">
+														© 2015-2018 LiveEdu. All rights reserved.
+														{% block unsubscribe %}{% endblock %}
+                                                    </span>
+                                                </td>
+                                            </tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+							<!--[if gte mso 9]></td><td width="50%" valign="top"><![endif]-->
+							<table class="ol col6 fw" width="100%" align="left" style="width: calc(50%);" cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td align="center" valign="top" width="100%" style="padding:26px 0px 0px 0px;">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="right" class="text-left">
+                                                    <table border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td align="center" bgcolor="#80ba61">
+                                                                <a href="mailto:{{ contact_email }}" target="_blank" style="font-size: 11px; font-weight:700; font-style:italic; color: #ffffff; text-decoration: none; padding: 4px 8px; border: 1px solid #80ba61; display: inline-block;">Contact support</a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+									</td>
+								</tr>
+							</table>
+							<!--[if gte mso 9]></td></tr></table><![endif]-->
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		{% endblock %}
+
+	</table></td></tr></table><!--[if gte mso 9]></td></tr></table><![endif]--></center>
+</body>
+</html>

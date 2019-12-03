@@ -1,0 +1,48 @@
+<div class="table-responsive" style="height: 100%;">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th></th>
+                {% for d in dates %}
+                    <th>{{ d }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+                {% for bt in backtests %}           
+                <tr>
+                    <td>{{ bt.title }}</td>
+                    {% for k,v in actmap.items %}
+                        {% if k == bt.id %}
+                            {% for clr in v %}
+                                <td style="background:{{clr}};">
+                                    {% if bt.attribute == 0 %}
+                                        Regular
+                                    {% elif bt.attribute == 1 %}
+                                        Master
+                                    {% else %}
+                                        Slave
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        <tfoot>
+            <tr>
+                <td>Enter/Exit</td>
+                {% for act in acts %}
+                    <td>
+                        {% if act == 1 %}
+                            Enter
+                        {% else %}
+                            Exit
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        </tfoot>
+    </table>
+</div>

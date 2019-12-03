@@ -1,0 +1,68 @@
+<ul>
+    <li>The Arron indicator is composed of two lines. An up line which measures the number of periods since a High, and a down line which measures the number of periods since a Low.</li>
+    <li>The indicator is typically applied to 25 periods of data, so the indicator is showing how many periods it has been since a 25-period high or low.</li>
+    <li>When the Aroon Up is above the Aroon Down, it indicates bullish price behavior.</li>
+    <li>When the Aroon Down is above the Aroon Up, it signals bearish price behavior.</li>
+    <li>Crossovers of the two lines can signal trend changes. For example, when Aroon Up crosses above Aroon Down it may mean a new uptrend is starting.</li>
+    <li>The indicator moves between zero and 100. A reading above 50 means that a high/low (whichever line is above 50) was seen within the last 12 periods.</li>
+    <li>A reading below 50 means that the high/low was seen within the 13 periods.</li>
+</ul>
+<div class="row paramrow">
+    <div class="col-sm-5 text-center">
+        <label for="overbought">
+            Overbought
+        </label>
+    </div>
+    <div class="col-sm-5 text-center">
+        <input id="overbought" name="ovb" value="{{ SignalInputs.ovb }}"/>
+    </div>
+</div>
+
+<div class="row paramrow mb-4">
+    <div class="col-sm-5 text-center">
+        <label for="oversold">
+            Oversold
+        </label>
+    </div>
+    <div class="col-sm-5 text-center">
+        <input id="oversold" name="ovs" value="{{ SignalInputs.ovs }}"/>
+    </div>
+</div>
+
+<button type="button" class="btn_signal" data-letter="{{ tii_letter }}">Trigger Signal</button>
+<button type="button" class="btn_optimal" data-letter="{{ tii_letter }}">Optimal Setting</button>
+
+<div class="row mt-4">
+    <div class="col-sm-12" id="winlossratio">
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-sm-12" id="bestparams_result">
+    </div>
+</div>
+<script>
+$('.btn_signal').click(function () {
+    $.ajax({
+        url: '/triggersignal/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}', ovb: $('#overbought').val(), ovs: $('#oversold').val()},
+        success: function(data) {
+            widget.createSignalShape(data.signal_graph);
+            $('#winlossratio').text('Win/Loss Ratio: ' + data.traderet.winlossratio);
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+
+$('.btn_optimal').click(function () {
+    $('#loadingOptTrade').removeClass("d-none");
+    $.ajax({
+        url: '/optimaltrade/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}'},
+        success: function(data) {
+            $('#bestparams_result').html(data.html);
+            $('#loadingOptTrade').addClass("d-none");
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+</script>

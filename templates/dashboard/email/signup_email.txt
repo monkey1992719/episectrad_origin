@@ -1,0 +1,12 @@
+Hi,
+
+Someone wanted to sign up with email {{ email }}.
+
+If this was you, to complete the process please follow the link below:
+{{ protocol }}://{{ domain }}{% url 'signup_confirm' uidb64=uid token=token %}
+
+If this isn't you, just ignore this email.
+
+------------
+EpisecTrading team
+E-mail: {{ contact_email }}

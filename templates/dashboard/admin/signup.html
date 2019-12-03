@@ -1,0 +1,48 @@
+{% extends "dashboard/admin/layout.html" %}
+
+{% load static %}
+
+{% block extraheader %}
+{% endblock %}
+
+{% block extrastyle %}
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <form class="form-sign" method="post">
+        {% csrf_token %}
+
+        <img class="mb-4" src="/docs/4.2/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal text-center">Please sign up</h1>
+        
+        {% for field in form %}
+        <p>
+            {{ field.label_tag }}
+            {{ field }}
+            {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+            {% endfor %}
+        </p>
+        {% endfor %}
+
+        <!-- <div class="checkbox mbd-3">
+            <label>
+            <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div> -->
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+    </form>
+
+{% endblock %}

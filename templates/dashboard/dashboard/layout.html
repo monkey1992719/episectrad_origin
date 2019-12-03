@@ -1,0 +1,71 @@
+{% extends "dashboard/base.html" %}
+
+{% load static %}
+
+{% block header%}
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <!-- Custom styles for this project -->
+  <link href="{% static 'stylesheet/css/dashboard.css' %}" rel="stylesheet">
+
+  <!-- SweetAlert -->
+  <link href="{% static 'js/sweetalert/sweetalert.css' %}" rel="stylesheet">
+
+  <!-- JQuery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+  {% block extraheader %}
+
+  {% endblock %}
+
+{% endblock %}
+
+{% block style %}  
+
+  <style>
+      html, body {
+        height: 100%;
+        overflow-x: hidden;
+      }
+  </style>
+
+  {% block extrastyle %}
+
+  {% endblock %}
+
+{% endblock %}
+
+{% block layout %}
+
+  <body>
+              
+    {% block content %}
+    
+    {% endblock %}    
+
+    <!-- Bootstrap Start -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
+
+    <!-- SweetAlert -->
+    <script src="{% static 'js/sweetalert/sweetalert.min.js' %}"></script>
+
+    {% block extrafooter %}
+
+    {% endblock %}
+
+  </body>
+
+{% endblock %}

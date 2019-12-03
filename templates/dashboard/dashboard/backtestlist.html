@@ -1,0 +1,278 @@
+<div class="table-responsive">
+    <table class="table table-striped table-sm vmiddle mb-0">
+        <thead>
+        <tr>
+            <!-- <th></th> -->
+            <th>Indicator/Pattern</th>
+            <!-- <th>Signal</th> -->
+            <th>Attribute</th>
+            <th title="Backtest with Manual Setting" class="alltrade"><a href="#"><i class="mdi mdi-play"></i></a></th>
+            <th title="Backtest with Optimizing" class="alltrain"><a href="#"><i class="mdi mdi-fast-forward"></i></a></th>
+            <!-- <th></th>
+            <th></th> -->
+        </tr>
+        </thead>
+        <tbody>
+        {% for bt in Backtests %}
+        <tr style="cursor:pointer;" id="btrow_{{bt.id}}" data-id="{{bt.id}}" data-mode="{{bt.mode}}"
+            {% if bt.mode == 0 %} 
+                data-tid="{{ bt.tradeindicator.id }}"
+            {% elif bt.mode == 1 %}
+                data-pattern="{{ bt.pricebar_pattern }}"
+            {% else %}
+                data-pattern="{{ bt.chart_pattern }}"
+            {% endif %}
+        >
+            <!-- <td>{{ forloop.counter }}</td> -->
+            <td>
+                {% autoescape off %}{{ bt.title }}{% endautoescape %}
+            </td>
+            <td>
+                <select class="w-100" id="attr_{{bt.id}}" data-id="{{bt.id}}" value={{bt.attribute}}>
+                    <option value="0" {% if bt.attribute == 0 %} selected {% endif %}>Regular</option>
+                    <option value="1" {% if bt.attribute == 1 %} selected {% endif %}>Master</option>
+                    <option value="2" {% if bt.attribute == 2 %} selected {% endif %}>Slave</option>
+                </select>
+            </td>
+            <!-- <td title="Backtest with Manual Setting" class="trade"><a href="#"><i class="mdi mdi-play"></i></a</td>
+            <td title="Backtest with Optimizing" class="train"><a href="#"><i class="mdi mdi-fast-forward"></i></a></td> -->
+            <td class="save"><a href="#"><i class="mdi mdi-content-save"></i></a></td>
+            <td class="remove"><a href="#"><i class="mdi mdi-delete"></i></a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Total Signals</td>
+                <td class="text-center" id="totalsignal"></td>
+                <td></td>
+                <td class="actmapview"><a href="#"><i class="mdi mdi-flip-to-front"></i></a></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    // ======================== indicator trading list pane start =====================
+    $('#tilistdiv tr .save a').addClass('not-active');  
+    $('#tilistdiv tbody tr').click( function() {
+
+        $('#tilistdiv tr').removeClass('focusrow');
+        $(this).addClass('focusrow');
+
+        $('#tilistdiv tr .save a').addClass('not-active');
+        $(this).children('.save').children('a').removeClass('not-active');
+
+        var mode = $(this).data("mode");
+
+        if(mode == 0) {
+            var tradeid = $(this).data("tid");
+            $.ajax({
+                url: '/tradingindicatoroption',
+                data: {trade_indicator_id: tradeid},
+                success: function(html){
+                    $('#tioptiondiv').html(html);
+                }
+            });
+        }
+        else if(mode == 1) {
+            $('#tioptiondiv').html("");
+            $.ajax({
+                url: "/recogpricebarpattern",
+                data: { 'patternname': $(this).data("pattern"), dashboard_id: dashboard_id },
+                success: function (data) {
+                    var indexes = JSON.parse(data.indexes);
+                    barpatternalert(data.dates, indexes, data.lows, data.highs);
+                }
+            });
+        }
+        else if(mode == 2) {
+            $('#tioptiondiv').html("");
+            $.ajax({
+                url: "/recogchartpattern",
+                data: { 'patternname': $(this).data("pattern"), dashboard_id: dashboard_id },
+                dataType: "json",
+                success: function (data) {
+                    var fromindex = data.fromindex;
+                    var toindex = data.toindex;
+                    var maxval = data.maxval;
+                    var minval = data.minval;
+
+                    widget.removeAllShapes();
+
+                    widget.createMultipointShape([{
+                    index: fromindex, price: maxval
+                    }, {
+                    index: toindex, price: minval
+                    }], { shape: 'rectangle' });
+                }
+            });
+        }
+        
+    });
+
+    // $('#tilistdiv tr select').click( function() {
+    //     event.stopPropagation();
+    // });
+
+    $('.remove').click( function() { 
+        var mode = $(this).parent().data("mode");
+        if(mode == 0) {
+            var tradeid = $(this).parent().data("tid");
+            widget.removePanel(tradeid);
+            removePanel(tradeid);
+        }
+        else{
+            $.ajax({
+                url: '/removebacktest',
+                data: {backtest_id: $(this).parent().data("id")},
+                success: function(){
+                    refreshIndicatorTradingList();
+                }
+            });
+        }
+        event.stopPropagation();
+    });
+
+    $('.save').click( function() { 
+        event.stopPropagation();
+        var mode = $(this).parent().data("mode");
+       
+        if(!$(this).hasClass('not-active') && mode==0){
+
+            var traditional = [];
+            var ntraditional = [];
+            $('input[id^="traditional_"]').each( function() {
+                if($(this).prop("checked")){
+                    traditional.push($(this).data("id"));
+                }
+                else{
+                    ntraditional.push($(this).data("id"));
+                }
+            });
+            var threshold = [];
+            var nthreshold = [];
+            $('input[id^="threshold_"]').each( function() {
+                if($(this).prop("checked")){
+                    threshold.push({'cp_id': $(this).data("id"), 'tii_id': $(this).data("tiiid"), 'value_b': $('#thresholdbvalue_'+$(this).data("id")).val(),  'value_s': $('#thresholdsvalue_'+$(this).data("id")).val()});
+                }
+                else{
+                    nthreshold.push({'cp_id': $(this).data("id"), 'tii_id': $(this).data("tiiid")});
+                }
+            });
+            var cross2 = [];
+            var ncross2 = [];
+            $('input[id^="cr_"]').each( function() {
+                if($(this).prop("checked")){
+                    cross2.push({'tii1id': $(this).data("tii1id"), 'cp1id': $(this).data("cp1id"), 'tii2id': $(this).data("tii2id"), 'cp2id': $(this).data("cp2id")});
+                }
+                else{
+                    ncross2.push({'tii1id': $(this).data("tii1id"), 'cp1id': $(this).data("cp1id"), 'tii2id': $(this).data("tii2id"), 'cp2id': $(this).data("cp2id")});                    
+                }
+            });
+            var crossv = [];
+            var ncrossv = [];
+            $('input[id^="cv_"]').each( function() {
+                if($(this).prop("checked")){
+                    crossv.push({'tiiid': $(this).data("tiiid"), 'cpid': $(this).data("cpid")});
+                }
+                else{
+                    ncrossv.push({'tiiid': $(this).data("tiiid"), 'cpid': $(this).data("cpid")});
+                }
+            });
+            var ti_id = $('#tioption').data('id');
+            // var signal = $('#signal_'+ti_id).val();
+            var backtestmode = $('#backtestmode').val();
+            var data = {
+                'trade_indicator_id': ti_id,
+                // 'signal': signal,
+                'backtest_mode': backtestmode,
+                'options': {
+                    'traditional': traditional,
+                    'ntraditional': ntraditional,
+                    'threshold': threshold,
+                    'nthreshold': nthreshold,
+                    'cross2': cross2,
+                    'ncross2': ncross2,
+                    'crossv': crossv,
+                    'ncrossv': ncrossv
+                }
+            };
+            $.ajax({
+                url : '/tradingindicatoroptionsave',
+                // data : data,
+                data : {'data':JSON.stringify(data)},
+                dataType: "json",
+                success: function (data) {
+                    
+                }
+            });
+        }
+    });
+
+    $('select[id^="attr_"]').change( function() {
+        var backtest_id = $(this).data("id");
+        $.ajax({
+            url : '/backtestattributesave',
+            data : {backtest_id: backtest_id, attribute: $(this).val()},
+            success: function (data) {
+                
+            }
+        });
+    });
+
+    $('.alltrade').click( function() {
+        $('#loadingBacktest').removeClass("d-none");
+        $.ajax({
+            url : '/backtest',
+            data : {dashboard_id: dashboard_id, optmode: 0},
+            success: function (data) {
+                if( data.state == 'error' ){
+                    swal(data.value);
+                    $('#loadingBacktest').addClass("d-none");
+                }
+                else if( data.state == 'ok' ){
+                    var html = data.html;
+                    $('#statdiv').html(html);
+                    actmap = data.actmap
+                    backtest_showready = 1;
+                    acts = data.acts
+                    $('#loadingBacktest').addClass("d-none");
+
+                    $('#actionmapview').html(data.html2);
+                }
+            }
+        });
+    });
+
+    $('.alltrain').click( function() {
+        $('#loadingBacktest').removeClass("d-none");
+        $.ajax({
+            url : '/backtest',
+            data : {dashboard_id: dashboard_id, optmode: 1},
+            success: function (data) {
+                if( data.state == 'error' ){
+                    swal(data.value);
+                    $('#loadingBacktest').addClass("d-none");
+                }
+                else if( data.state == 'ok' ){
+                    var html = data.html;
+                    $('#statdiv').html(html);
+                    actmap = data.actmap
+                    backtest_showready = 1;
+                    acts = data.acts
+                    $('#bparamdiv').html(data.html1);
+                    $('#loadingBacktest').addClass("d-none");
+
+                    $('#actionmapview').html(data.html2);
+
+                }
+            }
+        });
+    });
+
+    $('.actmapview').click( function () {
+        $('#actionmapdialog').modal();
+    });
+    // ======================== indicator trading list pane end =====================
+</script>

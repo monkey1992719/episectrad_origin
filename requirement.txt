@@ -1,0 +1,8 @@
+pip install pandas --user
+pip install plotly --user
+pip install -U scikit-learn scipy matplotlib --user
+
+pip install statsmodels
+sudo apt-get install python3-tk
+pip install yahoo_fin
+pip install forex-python

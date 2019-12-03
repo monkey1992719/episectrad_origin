@@ -1,0 +1,46 @@
+<h6 class="card-title text-center">Trade Laboratory Statistics</h6>
+
+<div class="table-responsive">
+    <table class="table" id="statistics">
+      <!-- <thead>
+        <tr>
+          <th>Bullish</th>
+          <th>Bearish</th>
+        </tr>
+      </thead> -->
+      <tbody>
+        <tr>
+          <td>Best risk to reward:</td>
+          <td>Target +{{ result.besttarget|floatformat:2 }}% / Stop loss -{{ result.beststoploss|floatformat:2 }}%</td>
+        </tr>
+        <tr>
+            <td>Win/Loss ratio:</td>
+            <td>{{ result.winlossratio|floatformat:"0" }}% ({{ result.winn }} wins / {{ result.lossn }} loss)</td>
+        </tr>
+        <tr>
+            <td>Max losing streak:</td>
+            <td>{{ result.maxlosingstreak }} losses in a row</td>
+        </tr>
+        <tr>
+            <td>Max winning streak:</td>
+            <td>{{ result.maxwinningstreak }} wins in a row</td>
+        </tr>
+        <tr>
+            <td>Average time for buy signal:</td>
+            <td>{{ result.avbuytime|floatformat:"0" }} bars</td>
+        </tr>
+        <tr>
+          <td>Average time for sell signal:</td>
+          <td>{{ result.avselltime|floatformat:"0" }} bars</td>
+        </tr>
+        <tr>
+            <td>Average profit:</td>
+            <td>{{ result.avprofit|floatformat:2 }}% ({{ result.avprofitmoney|floatformat:"0" }}USD at current price)</td>
+        </tr>
+        <tr>
+            <td>Average loss:</td>
+            <td>{{ result.avloss|floatformat:2 }}% ({{ result.avlossmoney|floatformat:"0" }}USD at current price)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

@@ -1,0 +1,38 @@
+{% extends "dashboard/admin/layout.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Email Sent" %}{% endblock %}
+
+{% block body_css_class %}dashboard-password-reset-page{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="container">
+            <div class="dashboard-password-reset">
+                <p class="title small">{% trans "Confirmation email sent" %}</p>
+
+                <div class="form">
+                    <p class="sub-title">
+                        {% trans "We've sent you an email!" %}
+                    </p>
+
+                    <br>
+
+                    <p class="text">
+                        {% trans "We need to confirm your email address so we've sent you a message. Please check your mail for instructions." %}
+                    </p>
+
+                    <p class="text">
+                        <b>{% trans "You should receive them shortly." %}</b>
+                    </p>
+
+                    <br>
+
+                    <p class="text info">
+                        {% trans "If you don't receive an email, please make sure you've entered the address correctly, and check your spam folder." %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

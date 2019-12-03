@@ -1,0 +1,54 @@
+<h4>Zero Line Crossover</h4>
+<p>
+This is the most basic and straightforward signal a trader can get when using the Awesome Oscillator. When the AO crosses above the zero line, short-term momentum is rising faster than long-term momentum. In this case, a zero line crossover can be treated as a buying opportunity. When the AO crosses below the zero line, short-term momentum is falling faster than long-term momentum. This pattern is considered by some traders as a selling opportunity.
+</p>
+<h4>Twin Peaks</h4>
+<p>
+Two consecutive peaks can be used as a trading signal, as well. Twin Peaks take on the role of the bullish trend messengers when 1) both peaks are below the zero line, 2) the second peak is higher than the first one and is followed by the green bar, 3) the trough between the peaks stays below the zero line.
+<br/>
+Twin Peaks become a signal of an upcoming bearish trend when 1) both of them are above the zero line, 2) the second peak is lower than the first one and is followed by the red bar, 3) the trough, in turn, remains above the zero line.
+</p>
+<h4>Saucer</h4>
+<p>
+Saucer is another signal that can be used for early trend forecasting. It follows the changes in three consecutive bars.
+<br/>
+When the Awesome oscillator is above zero and two consecutive red bars are followed by a green one, the saucer is considered to be bullish.
+</p>
+
+<button type="button" class="btn_signal" data-letter="{{ tii_letter }}">Trigger Signal</button>
+<button type="button" class="btn_optimal" data-letter="{{ tii_letter }}">Optimal Setting</button>
+
+<div class="row mt-4">
+    <div class="col-sm-12" id="winlossratio">
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-sm-12" id="bestparams_result">
+    </div>
+</div>
+<script>
+$('.btn_signal').click(function () {
+    $.ajax({
+        url: '/triggersignal/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}', ovb: $('#overbought').val(), ovs: $('#oversold').val()},
+        success: function(data) {
+            widget.createSignalShape(data.signal_graph);
+            $('#winlossratio').text('Win/Loss Ratio: ' + data.traderet.winlossratio);
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+
+$('.btn_optimal').click(function () {
+    $('#loadingOptTrade').removeClass("d-none");
+    $.ajax({
+        url: '/optimaltrade/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}'},
+        success: function(data) {
+            $('#bestparams_result').html(data.html);
+            $('#loadingOptTrade').addClass("d-none");
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+</script>

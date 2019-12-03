@@ -1,0 +1,114 @@
+
+<form method="POST" action="/dashboardsetting" id="dashboardsettingform">
+    {% csrf_token %}
+    <input type="hidden" id="dashboard_id" name="dashboard_id" value="{{ dashboard_id }}">
+    <div class="row">
+        <div class="col-md-4 text-right">
+            <label style="font-size:18px;font-weight:bold;" for="title">Title</label>
+        </div>
+        <div class="col-md-8">
+            <input class="w-100 form-control" required type="text" id="title" name="title" value="{{ dashboard.title }}">
+        </div>
+    </div>
+
+    <div class="row pt-3">
+        <div class="col-md-4 text-right">
+            <label style="font-size:18px;font-weight:bold;" for="symbol_">Symbol</label>
+        </div>
+        <div class="col-md-8">
+            <input class="w-100 form-control" required type="text" id="symbol_" name="symbol" value="{{ dashboard.symbol }}">
+        </div>
+    </div>
+
+    <div class="row pt-3">
+        <div class="col-md-4 text-right">
+            <label style="font-size:18px;font-weight:bold;" for="bIntraday">Historical/Intraday</label>
+        </div>
+        <div class="col-md-8">
+            <select class="w-100 form-control" required id="bIntraday" name="bIntraday" value="{{ dashboard.bIntraday }}">
+                <option value="1" {% if dashboard.bIntraday == 1 %} selected {% endif %}>Intraday Data</option>
+                <option value="0" {% if dashboard.bIntraday == 0 %} selected {% endif %}>Historical Data</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row pt-3" id="periodrow">
+        <div class="col-md-4 text-right">
+            <label style="font-size:18px;font-weight:bold;" for="period">Period</label>
+        </div>
+        <div class="col-md-8">
+            <select class="w-100 form-control" required id="period" name="period" value="{{ dashboard.period }}">
+                {% for pd in Periods %}
+                <option value="{{ pd }}" {% if dashboard.period == pd %} selected {% endif %}>{{ pd }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="row pt-3" id="intervalrow">
+        <div class="col-md-4 text-right">
+            <label style="font-size:18px;font-weight:bold;" for="interval">Interval</label>
+        </div>
+        <div class="col-md-8">
+            <select class="w-100 form-control" required id="interval" name="interval" value="{{ dashboard.interval }}">
+                {% for it in Intervals %}
+                <option value="{{ it }}" {% if dashboard.interval == it %} selected {% endif %}>{{ it }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</form>
+
+<script>
+    if($('#bIntraday').val() == "1"){
+        $('#periodrow').hide();
+    }
+    else{
+        $('#intervalrow').hide();
+    }
+    $('#bIntraday').change( function() {
+        if($(this).val() == "1"){
+            $('#periodrow').hide();
+            $('#intervalrow').show();
+        }
+        else{
+            $('#periodrow').show();
+            $('#intervalrow').hide();
+        }
+    });
+
+    $(function(){
+    var options = {
+        url: function(phrase) {
+            return "/searchsymbols?keyword="+phrase;
+        },
+
+        getValue: function(element) {
+            return element["1. symbol"];
+        },
+
+        template: {
+            type: "description",
+            fields: {
+                description: "2. name"
+            }
+        },
+
+        list: {
+            maxNumberOfElements: 8,
+            match: {
+                enabled: true
+            },
+            sort: {
+                enabled: true
+            },
+            onChooseEvent: function() {
+            }
+        },
+
+        theme: "square"
+        };
+
+        $("#symbol_").easyAutocomplete(options);
+    });
+</script>

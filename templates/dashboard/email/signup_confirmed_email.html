@@ -1,0 +1,45 @@
+{% extends 'dashboard/email/base_email.html' %}
+{% block content %}
+<tr>
+	<td align="left">
+		<span style="font-size:32px;">
+			Hi,
+		</span>
+	</td>
+</tr>
+
+<tr>
+	<td align="left" style="padding:20px 0px 0px 0px;">
+		<span style="font-size:15px;">
+			Thank you for confirming your email. You have successfully registered for the Education Ecosystem.
+		</span>
+	</td>
+</tr>
+
+<tr>
+	<td align="center" style="padding:30px 0px 0px 0px;">
+		<img src="https://education-ecosystem.com/static/img/email/desktop.png" alt="" width="537" style="width: 100%; max-width: 537px; font-family: sans-serif; color: #ffffff; font-size: 20px; display: block; border: 0px;" border="0" />
+	</td>
+</tr>
+
+<!-- spacer: 30 -->
+<tr><td align="left" height="30">&nbsp;</td></tr>
+
+<tr>
+	<td align="center" valign="top" width="100%" style="padding:25px 0px 10px 0px; border-top:1px solid #eeeeee;">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td align="left" class="text-left">
+					<table border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td align="center" bgcolor="#2574a9">
+								<a href="{{ protocol }}://{{ domain }}{% url 'dashboard' %}" style="font-size: 16px; font-weight:700; color: #ffffff; text-decoration: none; padding: 20px 32px; border: 1px solid #2574a9; display: inline-block;">Access your Dashboard here</a>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "dashboard/admin/layout.html" %}
+
+{% load static %}
+
+{% block extraheader %}
+{% endblock %}
+
+{% block extrastyle %}
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }    
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <form class="form-sign" method="post">
+        <img class="mb-4" src="/docs/4.2/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal text-center">Please log in</h1>
+
+        {% csrf_token %}
+
+        {{ form.errors }}
+
+        {% if form.errors %}
+        <p>Your username and password didn't match. Please try again.</p>
+        {% endif %}
+
+        {% if next %}
+            {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed,
+            please login with an account that has access.</p>
+            {% else %}
+            <p>Please login to see this page.</p>
+            {% endif %}
+        {% endif %}
+
+        {% for field in form %}
+        <p>
+            {{ field.label_tag }}
+            {{ field }}
+        </p>
+        {% endfor %}
+
+        <div class="checkbox mb-3">
+            <label>
+            <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Enter</button>
+        <p class="mt-5 mb-3 text-muted">Not member? 
+            <a href="signup">Sign up</a>
+        </p>
+    </form>
+
+{% endblock %}

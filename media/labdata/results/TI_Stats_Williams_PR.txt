@@ -1,0 +1,4 @@
+Best Parameters & Returns 
+ 4 231.69369247286784 MR
+Win/Loss Stats     win  loss       win%      loss%
+0  63.0   8.0  88.732394  11.267606

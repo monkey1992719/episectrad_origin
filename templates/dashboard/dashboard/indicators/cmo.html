@@ -1,0 +1,74 @@
+<ul>
+    <li>
+        CMO indicates overbought conditions when it reaches the 50 level and oversold conditions when it reaches −50. You can also look for signals based on the CMO crossing above and below a signal line composed of a 9-period moving average of the 20 period CMO.
+    </li>
+    <li>
+        CMO measures the trend strength. The higher the absolute value of the CMO, the stronger the trend. Lower absolute values of the CMO indicate sideways trading ranges.
+    </li>
+    <li>
+        CMO often forms chart patterns which may not show on the underlying price chart, such as double tops and bottoms and trend lines. Also look for support or resistance on the CMO.
+    </li>
+    <li>
+        If underlying prices make a new high or low that is not confirmed by the CMO, the divergence can signal a price reversal.
+    </li>
+</ul>
+
+<div class="row paramrow">
+    <div class="col-sm-5 text-center">
+        <label for="overbought">
+            Overbought
+        </label>
+    </div>
+    <div class="col-sm-5 text-center">
+        <input id="overbought" name="ovb" value="{{ SignalInputs.ovb }}"/>
+    </div>
+</div>
+
+<div class="row paramrow mb-4">
+    <div class="col-sm-5 text-center">
+        <label for="oversold">
+            Oversold
+        </label>
+    </div>
+    <div class="col-sm-5 text-center">
+        <input id="oversold" name="ovs" value="{{ SignalInputs.ovs }}"/>
+    </div>
+</div>
+
+<button type="button" class="btn_signal" data-letter="{{ tii_letter }}">Trigger Signal</button>
+<button type="button" class="btn_optimal" data-letter="{{ tii_letter }}">Optimal Setting</button>
+
+<div class="row mt-4">
+    <div class="col-sm-12" id="winlossratio">
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-sm-12" id="bestparams_result">
+    </div>
+</div>
+<script>
+$('.btn_signal').click(function () {
+    $.ajax({
+        url: '/triggersignal/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}', ovb: $('#overbought').val(), ovs: $('#oversold').val()},
+        success: function(data) {
+            widget.createSignalShape(data.signal_graph);
+            $('#winlossratio').text('Win/Loss Ratio: ' + data.traderet.winlossratio);
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+
+$('.btn_optimal').click(function () {
+    $('#loadingOptTrade').removeClass("d-none");
+    $.ajax({
+        url: '/optimaltrade/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}'},
+        success: function(data) {
+            $('#bestparams_result').html(data.html);
+            $('#loadingOptTrade').addClass("d-none");
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+</script>

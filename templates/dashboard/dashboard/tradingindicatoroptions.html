@@ -1,0 +1,89 @@
+<h6 class="card-title text-center">{% autoescape off %}{{ Ti.title }}{% endautoescape %}</h6>
+<div class="row ml-sm-auto mb-0" id="tioption" data-id="{{Ti.pk}}">
+  <div class="col-6">
+    <label for="backtestmode">Backtest Mode</label>
+  </div>
+  <div class="col-6">
+    <select id="backtestmode" name="backtestmode" value={{ Ti.backtest_mode }}>
+      {% if Ti.tradchoice == 1 %}
+        <option value="0" selected>Traditional</option>
+      {% else %}
+        <option value="1" {% if Ti.backtest_mode == 1 %} selected {% endif %}>Threshold</option>
+        <option value="2" {% if Ti.backtest_mode == 2 %} selected {% endif %}>Cross Two</option>
+        <option value="3" {% if Ti.backtest_mode == 3 %} selected {% endif %}>Cross Inverted</option>
+      {% endif %}
+    </select>
+  </div>
+  
+</div>
+<div class="row ml-sm-auto mb-0">
+  <div class="col-12 d-none" id="mode_0">
+    {% for tii in Choice.traditional %}
+    <div class="row my-2">
+      <div class="col-sm-12">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="traditional_{{ tii.pk }}" data-id="{{ tii.pk }}" {% ifequal tii.traditional 1 %} checked {% endifequal %}/>
+          <label class="custom-control-label" for="traditional_{{ tii.pk }}">{{ tii.indicator.name }}</label>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="col-12 d-none" id="mode_1">
+    {% for th in Choice.thresholds %}
+    <div class="row my-2">
+      <div class="col-sm-4">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="threshold_{{ th.cp_id }}" data-tiiid="{{ th.tii_id}}" data-id="{{ th.cp_id }}"  {% ifequal th.check 1 %} checked {% endifequal %}/>
+          <label class="custom-control-label" for="threshold_{{ th.cp_id }}">{{ th.plotname }}</label>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <label class="d-inlineblock" for="thresholdbvalue_{{ th.cp_id }}">Buy threshold</label>
+        <input type="text" class="form_control d-inline w-100" id="thresholdbvalue_{{ th.cp_id }}" value="{{ th.threshold_b }}" />
+      </div>
+      <div class="col-sm-4">
+        <label for="thresholdsvalue_{{ th.cp_id }}">Sell threshold</label>
+        <input type="text" class="form_control d-inline w-100" id="thresholdsvalue_{{ th.cp_id }}" value="{{ th.threshold_s }}" />
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="col-12 d-none" id="mode_2">
+    {% for cr in Choice.cross2 %}
+    <div class="row my-2">
+      <div class="col-sm-12">
+        <div class="custom-control custom-checkbox d-inline">
+          <input type="checkbox" class="custom-control-input" id="cr_{{ forloop.counter }}" data-tii1id="{{ cr.tii1.pk }}"
+            data-cp1id="{{ cr.cp1.pk }}" data-tii2id="{{ cr.tii2.pk }}" data-cp2id="{{ cr.cp2.pk }}" {% ifequal cr.state 'yes' %} checked {% endifequal %} />
+          <label class="custom-control-label" for="cr_{{ forloop.counter }}">{{ cr.cp1.plotname }} vs {{ cr.cp2.plotname }}</label>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="col-12 d-none" id="mode_3">
+    {% for cv in Choice.crossv %}
+    <div class="row my-2">
+      <div class="col-sm-12">
+        <div class="custom-control custom-checkbox d-inline">
+          <input type="checkbox" class="custom-control-input" id="cv_{{ forloop.counter }}" data-tiiid="{{ cv.tii.pk }}"
+            data-cpid="{{ cv.cp.pk }}" {% ifequal cv.state 'yes' %} checked {% endifequal %} />
+          <label class="custom-control-label" for="cv_{{ forloop.counter }}">{{ cv.cp.plotname }}</label>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  $('#mode_'+'{{ Ti.backtest_mode }}').removeClass('d-none');
+  $('#backtestmode').change( function() {
+    $('div[id^="mode_"]').addClass('d-none');
+    $('#mode_'+$(this).val()).removeClass('d-none');
+  });
+</script>

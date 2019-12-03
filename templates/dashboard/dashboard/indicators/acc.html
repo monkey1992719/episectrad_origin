@@ -1,0 +1,18 @@
+<ul>
+    <li>If the price is rising but A/D is falling, it signals underlying weakness and a potential decline in price.</li>
+    <li>If the price of an asset is falling but A/D is rising, it signals underlying strength and the price may start to rise.</li>
+</ul>
+
+<button type="button" class="btn_signal" data-letter="{{ tii_letter }}">Trigger Signal</button>
+<script>
+$('.btn_signal').click(function () {
+    $.ajax({
+        url: '/triggersignal/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}'},
+        success: function(data) {
+            console.log(data);
+            widget.createSignalShape(data.signal_graph);
+        }
+    });
+})
+</script>

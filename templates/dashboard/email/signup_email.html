@@ -1,0 +1,36 @@
+{% extends 'dashboard/email/base_email.html' %}
+{% block content %}
+<tr>
+	<td align="left">
+		<span style="font-size:32px;">
+			Hi,
+		</span>
+	</td>
+</tr>
+
+<tr>
+	<td align="left" style="padding:20px 0px 0px 0px;">
+		<span style="font-size:15px;">
+			Someone wanted to sign up with email <b>{{ email }}</b>
+		</span>
+	</td>
+</tr>
+
+<tr>
+	<td align="left" style="padding:20px 0px 0px 0px;">
+		<span style="font-size:15px;">
+			If this was you, to complete the process please follow the link below:
+			<br>
+			<a href="{{ protocol }}://{{ domain }}{% url 'signup_confirm' uidb64=uid token=token %}" style="color:#2574a9; font-weight:700; font-style:italic;">{{ protocol }}://{{ domain }}{% url 'signup_confirm' uidb64=uid token=token %}</a>
+		</span>
+	</td>
+</tr>
+
+<tr>
+	<td align="left" style="padding:20px 0px 0px 0px;">
+		<span style="font-size:15px;">
+			If this isn't you, just ignore this email.
+		</span>
+	</td>
+</tr>
+{% endblock %}

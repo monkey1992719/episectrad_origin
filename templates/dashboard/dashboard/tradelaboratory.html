@@ -1,0 +1,1016 @@
+{% extends "dashboard/dashboard/layout.html" %}
+
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% block extraheader %}
+<!-- EPISEC chart css -->
+<link href="{% static 'js/episecchart/episecchart.css' %}" rel="stylesheet">
+
+<!-- color picker -->
+<link rel="stylesheet" href="{% static 'js/colorpicker/css/bootstrap-colorpicker.css' %}" type="text/css" />
+
+<!-- CSS file -->
+<link rel="stylesheet" href="{% static 'js/easy-autocomplete/easy-autocomplete.css' %}"> 
+
+<!-- Additional CSS Themes file - not required-->
+<link rel="stylesheet" href="{% static 'js/easy-autocomplete/easy-autocomplete.themes.css' %}"> 
+
+<!-- Datetime picker -->
+<link rel="stylesheet" href="{% static 'js/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
+
+<script>
+var widget;
+</script>
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+  html, body {
+      height: 100%;
+      overflow:hidden;
+  }
+
+  .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link.eexact {
+      margin: 2px;
+  }
+
+  .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link.eexact.active {
+      border: 2px solid rgba(38, 93, 241, 0.5);;
+      border-radius: 3px;
+      color:black;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-dark sticky-top navbar-expand-md dark-bg1 flex-md-nowrap p-0" id="topNavBar">
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0 active" href="#" id="logopanel">EPISEC</a>
+  <ul class="navbar-nav px-3 mr-auto">
+    <li class="nav-item text-nowrap" title="Toggle Sidebar">
+      <a class="nav-link" href="#" id="sidebar-toggler">
+        <i class="mdi mdi-menu"></i>
+      </a>
+    </li>
+    <li class="nav-item text-nowrap" title="Add New Dashboard">
+      <a class="nav-link" href="#" id="adddashboard">
+        <i class="mdi mdi-comment-plus-outline"></i>        
+      </a>
+    </li>
+    <li class="nav-item text-nowrap" title="Reset this Dashboard">
+      <a class="nav-link" href="#" id="updatedashboard">
+        <i class="mdi mdi-rename-box"></i>        
+      </a>
+    </li>
+    <li class="nav-item text-nowrap" title="Delete this Dashboard">
+      <a class="nav-link" href="/deletedashboard/{{ Dashboard_ID }}">
+        <i class="mdi mdi-delete"></i>        
+      </a>
+    </li>
+  </ul>
+  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="symbol">
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="login">Log In</a>
+    </li>
+  </ul>
+</nav>
+<!-- ============================================================== -->
+<!-- Start Page Content -->
+<!-- ============================================================== -->
+<!-- Row -->
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar  -->
+    <nav class="col-md-2 active" id="sidebar">
+        <div class="sidebar-sticky pt-0">
+
+          <ul class="list-unstyled components">
+              <li class="active">
+                  <a href="dashboard" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                      <i class="fas fa-home"></i>
+                      Dashboard
+                  </a>
+                  <ul class="list-unstyled" id="dashboardSubmenu">
+                      {% for dash in Dashboards %}
+                      <li {% if dash.id == Dashboard_ID %} class="active" {% endif %}>
+                        <a href="/{{ dash.id }}">
+                          {{ dash.title }}
+                        </a>
+                      </li>
+                      {% endfor %}
+                  </ul>
+              </li>
+              <li>
+                  <a href="#">
+                      <i class="fas fa-briefcase"></i>
+                      About
+                  </a>
+                  <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                      <i class="fas fa-copy"></i>
+                      Pages
+                  </a>
+                  <ul class="collapse list-unstyled" id="pageSubmenu">
+                      <li>
+                          <a href="#">Page 1</a>
+                      </li>
+                      <li>
+                          <a href="#">Page 2</a>
+                      </li>
+                      <li>
+                          <a href="#">Page 3</a>
+                      </li>
+                  </ul>
+              </li>
+              <li>
+                  <a href="#">
+                      <i class="fas fa-image"></i>
+                      Portfolio
+                  </a>
+              </li>
+              <li>
+                  <a href="#">
+                      <i class="fas fa-question"></i>
+                      FAQ
+                  </a>
+              </li>
+              <li>
+                  <a href="#">
+                      <i class="fas fa-paper-plane"></i>
+                      Contact
+                  </a>
+              </li>
+          </ul>
+
+          <!-- <ul class="list-unstyled CTAs">
+              <li>
+                  <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Download source</a>
+              </li>
+              <li>
+                  <a href="https://bootstrapious.com/p/bootstrap-sidebar" class="article">Back to article</a>
+              </li>
+          </ul> -->
+        </div>
+    </nav>
+
+    <!-- Column -->
+    <div class="col-md-7 ml-sm-auto pt-0 px-0" id="chartpanel">
+      <div class="card fill">
+        <div class="card-body p-0" id="tradingview-widget-container">
+          <div class="spinner-container d-none" id="loadingChart">
+            <div class="spinner-border spinner-centre" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+
+          <nav class="navbar navbar-expand-lg navbar-light bg-light" id="episecChartToolBar">
+            <div class="collapse navbar-collapse">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item" title="Bar Style">
+                  <a class="nav-link dropdown-toggle py-0" href="#" id="chartTypeDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="mdi mdi-chart-bar"></i>
+                  </a>
+                  <div class="dropdown-menu" id="chartTypeMenu" aria-labelledby="chartTypeDropdown">
+                    <a class="dropdown-item" href="#" data-type="0">Candles</a>
+                    <a class="dropdown-item" href="#" data-type="1">Bars</a>
+                    <a class="dropdown-item" href="#" data-type="2">Renko</a>
+                    <a class="dropdown-item" href="#" data-type="3">Heikin Ashi</a>
+                    <a class="dropdown-item" href="#" data-type="4">Line break</a>
+                    <a class="dropdown-item" href="#" data-type="5">Kagi</a>
+                  </div>
+                </li>
+                <li class="nav-item" title="Indicator">
+                  <a class="nav-link dropdown-toggle py-0" href="#" data-toggle="modal" data-target="#indicatorsdialog" id="indicatordialoglink">
+                    <i class="mdi mdi-trending-up"></i>
+                  </a>
+                </li>
+                <li class="nav-item" title="Pricebar Pattern">
+                  <a class="nav-link dropdown-toggle py-0" href="#" data-toggle="modal" data-target="#pricebarpatternsdialog">
+                    <i class="mdi mdi-candle"></i>
+                  </a>
+                </li>
+                <li class="nav-item" title="Chart Pattern">
+                  <a class="nav-link dropdown-toggle py-0" href="#" data-toggle="modal" data-target="#chartpatternsdialog">
+                    <i class="mdi mdi-vector-polygon"></i>
+                  </a>
+                </li>
+              </ul>
+              <ul class="navbar-nav">
+                {% for interval in Intervals %}
+                <li class="nav-item text-nowrap">
+                  <a class="nav-link eexact py-0" href="#" data-intra="1" data-interval="{{ interval }}" id="period_{{ interval }}">{{ interval }}</a>
+                </li>
+                {% endfor %}
+
+                {% for period in Periods %}
+                <li class="nav-item text-nowrap">
+                  <a class="nav-link eexact py-0" href="#" data-intra="0" data-period="{{ period.period }}" data-from="{{period.start}}" data-to="{{period.end}}" id="period_{{ period.period }}">{{ period.period }}</a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </nav>
+
+          <!-- ============== modal dialogs start=============== -->
+
+          <!-- Indicator Modal dialog start -->
+          <div class="modal" tabindex="-1" role="dialog" id="indicatorsdialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h6 class="modal-title">Indicators</h6>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="htabs">
+                    <ul class="nav nav-tabs" role="tablist" id="indicatorcategoryTab">
+                      {% for key in Indicators %}
+                      <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#ind_category_{{ key }}"
+                          role="tab" aria-expanded="true">{{ key}}</a> </li>
+                      {% endfor %}
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content" id="indicatorcategoryTabContent" data-tid="yes">
+                      {% for key, value in Indicators.items %}
+                      <div class="tab-pane" id="ind_category_{{ key }}" role="tabpanel" aria-expanded="true" style="max-height:300px;overflow-y:auto;">
+                        <ul class="list-group">
+                        {% for item in value %}
+                          <li class="list-group-item libtn" id="ind_{{ item.1 }}" data-name="{{ item.0 }}" data-id="{{ item.1 }}" data-comb="{{ item.2 }}">
+                            {{ item.0 }}
+                          </li>
+                        {% endfor %}
+                        </ul>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Indicator Modal dialog end-->
+          <!-- Pricebar Pattern dialog start -->
+          <div class="modal" tabindex="-1" role="dialog" id="pricebarpatternsdialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h6 class="modal-title">Pricebar Pattern</h6>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" style="height:400px; overflow-y:scroll">
+                  <div class="table-responsive">
+                    <table class="table" id="pricebarPatternTable">
+                      <thead>
+                        <tr>
+                          <th>Bullish</th>
+                          <th>Bearish</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for item in BarPatterns %}
+                        <tr>
+                          <td style="cursor:pointer;" data-name="{{item.bullish}}">{{ item.bullish }}</td>
+                          <td style="cursor:pointer;" data-name="{{item.bearish}}">{{ item.bearish }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Pricebar Pattern dialog end -->
+          <!-- Chart Pattern dialog start -->
+          <div class="modal" tabindex="-1" role="dialog" id="chartpatternsdialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h6 class="modal-title">Chart Pattern</h6>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" style="height:400px; overflow-y:scroll">
+                  <div class="table-responsive">
+                    <table class="table" id="chartPatternTable">
+                      <thead>
+                        <tr>
+                          <th>Bullish</th>
+                          <th>Bearish</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for item in ChartPatterns %}
+                        <tr>
+                          <td style="cursor:pointer;" data-pattern="{{ item.bullish }}">{{ item.bullish }}</td>
+                          <td style="cursor:pointer;" data-pattern="{{ item.bearish }}">{{ item.bearish }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Pricebar Pattern dialog end -->
+
+          <!-- ============== modal dialogs end=============== -->
+
+          <div id="tv_chart_container"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================== backtest panel start ===================== -->
+    <div class="col-md-3 px-0 pt-0" id="backtestpanel">
+        <div class="spinner-container d-none" id="loadingBacktest">
+          <div class="spinner-border spinner-centre" role="status">
+            <span class="sr-only">Backtesting...</span>
+          </div>
+        </div>
+        <!-- ================ define enter signal select start ============== -->
+        <!-- <div class="card">
+          <div class="card-body p-2">
+            <h6 class="d-inline mr-3">Enter Signal: </h6>
+            <select id="enter_signal" name="enter_signal" value={{EnterSignal}}>
+              <option value="0" {% if EnterSignal == 0 %} selected {% endif %}>Buy and Sell</option>
+              <option value="1" {% if EnterSignal == 1 %} selected {% endif %}>Buy</option>
+              <option value="2" {% if EnterSignal == 2 %} selected {% endif %}>Sell</option>
+            </select>
+          </div>
+        </div> -->
+        <!-- ================ define enter signal select end ============== -->
+        <!-- ================== backtest list start ================= -->
+        <div class="card" style="overflow-y:auto;max-height:25%;">
+          <div class="card-body p-2" style="overflow-x:hidden;">
+            <div class="row ml-sm-auto mb-1" id="tilistdiv">
+              {% include "dashboard/dashboard/backtestlist.html" %} 
+            </div>
+          </div>
+        </div>
+        <!-- ================== backtest list end ================= -->
+
+        <!-- ================== indicator trade option panel start ================= -->
+        <div class="card" style="overflow-y:auto;max-height:25%;" >
+          <div class="card-body p-0 pt-1" style="overflow-x:hidden;" id="tioptiondiv">
+            
+          </div>
+        </div>
+        <!-- ================== indicator trade option panel end ================= -->
+
+        <!-- ================== statistics panel start ================= -->
+        <div class="card" style="overflow-y:auto;max-height:25%;" >
+          <div class="card-body p-0 pt-1" style="overflow-x:hidden;" id="statdiv">
+            
+          </div>
+        </div>
+        <!-- ================== statistics panel end ================= -->
+
+        <!-- ================== best param panel start ================= -->
+        <div class="card" style="overflow-y:auto;max-height:25%;" >
+          <div class="card-body p-0 pt-1" style="overflow-x:hidden;" id="bparamdiv">
+            
+          </div>
+        </div>
+        <!-- ================== best param panel end ================= -->
+    </div>
+    <!-- ====================== backtest panel end ===================== -->
+
+  </div>
+</div>
+<!-- Row -->
+
+<!-- ============================================================== -->
+<!-- End PAge Content -->
+<!-- ============================================================== -->
+
+<!-- Setting dialog start -->
+<div class="modal" tabindex="-1" role="dialog" id="settingdialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Setting</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="height:400px; overflow-y:scroll" id="settingview">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="settingsave">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Setting dialog start -->
+<div class="modal" tabindex="-1" role="dialog" id="mainsettingdialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Setting</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="height:400px; overflow-y:scroll" id="mainsettingview">
+
+        <!-- bull color picker -->
+        <div class="row">
+          <div class="col-sm-2 text-center">
+              <label for="color_bull">
+                  Bull
+              </label>
+          </div>
+          <div class="col-md-auto">
+              <div class="input-group" id="color_bull">
+                  <input type="hidden" class="form-control input-lg" value=""/>
+                  <span class="input-group-append">
+                      <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                  </span>
+              </div>
+          </div>
+        </div>
+
+        <!-- bear color pickers -->
+        <div class="row">
+          <div class="col-sm-2 text-center">
+              <label for="color_bear">
+                  Bear
+              </label>
+          </div>
+          <div class="col-md-auto">
+              <div class="input-group" id="color_bear">
+                  <input type="hidden" class="form-control input-lg" value=""/>
+                  <span class="input-group-append">
+                      <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                  </span>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="mainsettingsave">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Main Setting dialog end -->
+
+<!-- Action Map dialog start -->
+<div class="modal" tabindex="-1" role="dialog" id="actionmapdialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width:800px;height:600px;">
+      <div class="modal-header">
+        <h6 class="modal-title">Action Map Result</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="actionmapview">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Action Map dialog end -->
+
+<!-- Common dialog start -->
+<div class="modal" tabindex="-1" role="dialog" id="commondialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width:600px;height:360px;">
+      <div class="modal-header">
+        <h6 class="modal-title" id="commondialogtitle"></h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="commondialogview">
+      </div>
+      <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" id="dashboardsettingsave">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- Common dialog end -->
+
+<!-- EpisecTradingView Widget BEGIN -->
+<!-- EPISEC chart library -->
+<script type="text/javascript" src="{% static 'js/d3/d3.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/lodash/lodash.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/episecchart/episecpanel.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/episecchart/episeclibrary.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/episecchart/episecchart.js' %}"></script>
+<!-- colorpicker library -->
+<script type="text/javascript" src="{% static 'js/colorpicker/js/bootstrap-colorpicker.js' %}"></script>
+<!-- easy-autocomplete library-->
+<script type="text/javascript" src="{% static 'js/easy-autocomplete/jquery.easy-autocomplete.min.js' %}"></script> 
+
+<!-- bootstrap datetimepicker start -->
+<!-- moment -->
+<script type="text/javascript" src="{% static 'js/moment/moment.min.js' %}"></script>
+<!-- bootstrap datetimepicker -->
+<script type="text/javascript" src="{% static 'js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+<!-- bootstrap datetimepicker end -->
+
+<script type="text/javascript">
+      
+  var nowperiod = '{{ Period }}';
+  var nowinterval = '{{ Interval }}';
+  var bIntraday = {{ bIntraday }};
+  var nowsymbol = '{{ Symbol }}';
+  var dashboard_id = {{ Dashboard_ID}};
+
+  var backtest_showready = 0;
+  var actmap = {};
+  var acts;
+  var backtest_bparam_showready = 0;
+  var backtest_bparam;
+
+  // =================== symbol autocomplete start ==========================
+
+  $(function(){
+    var options = {
+      url: function(phrase) {
+        return "/searchsymbols?keyword="+phrase;
+      },
+
+      getValue: function(element) {
+          return element["1. symbol"];
+      },
+
+      template: {
+          type: "description",
+          fields: {
+              description: "2. name"
+          }
+      },
+
+      list: {
+          maxNumberOfElements: 8,
+          match: {
+              enabled: true
+          },
+          sort: {
+              enabled: true
+          },
+          onChooseEvent: function() {
+            var value = $("#symbol").getSelectedItemData()['1. symbol'];
+            nowsymbol = value;
+            changeSymbolPeriod();
+          }
+      },
+
+      theme: "square"
+      };
+
+      $("#symbol").easyAutocomplete(options);
+  });
+
+  // =================== symbol autocomplete start ==========================
+
+  // ============== interval and period option buttons css start ============  
+
+  function changeSymbolPeriod() {
+    // get selectors
+    
+    $('#loadingChart').removeClass("d-none");
+    params = { 'dashboard_id': dashboard_id, 'symbol': nowsymbol, 'period': nowperiod, 'interval': nowinterval, 'bIntraday': bIntraday };
+
+    // send ajax get request
+    $.ajax({
+      url: "/symbolperiodchange",
+      data: params,
+      dataType: "json",
+      success: function (data) {
+        $('#loadingChart').addClass("d-none");
+        var newprices = JSON.parse(data.prices);
+
+        var asset = nowperiod;
+        if( bIntraday){
+          asset = "/" + nowinterval;
+        }
+
+        widget.redrawChart(newprices, asset, nowsymbol, bIntraday);
+
+        for(var i=0; i < data.trades.length; i++){
+          widget.addTradingIndicator(data.trades[i].indicators, data.trades[i].tradeid, data.trades[i].with_main);
+        }
+
+        widget.setIndicatorSettings(data.settings);
+      }
+    });
+  }
+
+  if( bIntraday) {
+    $('#period_' + nowinterval).addClass('active');
+  }
+  else{
+    $('#period_' + nowperiod).addClass('active');
+  }
+
+  $('.nav-link.eexact').click(function () {
+    $('.nav-link.eexact.active').removeClass('active');
+    $(this).addClass('active');
+
+    if($(this).data('intra') == '1'){
+      nowinterval = $(this).data('interval');
+      bIntraday = 1;
+    }
+    else{
+      nowperiod = $(this).data('period');
+      bIntraday = 0;
+
+      // $('#backtest_start_date').val($(this).data("from"));
+      // $('#backtest_end_date').val($(this).data("to"));
+    }
+
+    changeSymbolPeriod();
+  });
+
+  $('#symbol').keypress(function (event) {
+    if (event.which == 13) {
+      var symbol = $(this).prop('value');
+      if (symbol == '') {
+        return;
+      }
+      else {
+        nowsymbol = symbol;
+        changeSymbolPeriod();
+      }
+    }
+  });
+
+  // ============== interval and period option buttons css end ============
+
+  // ===================== chart widget start =========================
+  chartreheight();
+
+  $(window).resize(chartreheight);
+  var prices = JSON.parse('{{Prices|safe}}');
+
+  widget = new EpisecChart({
+    fullscreen: true,
+    chartType: 0,
+    container: 'tv_chart_container',
+    data: prices,
+    symbol: nowsymbol,
+    asset : nowperiod,
+    bIntraday : bIntraday,
+    removeIndicatorCallback : removeIndicator,
+    removePanelCallback : removePanel,
+    settingViewCallback : settingViewCallback,
+    requireAddIndicatorCallback : requireAddIndicator,
+    bandOverCallback : bandOver
+  });
+
+  var trades = {{TradingIndicatorResults|safe}};
+  for(var i=0; i < trades.length; i++){
+    widget.addTradingIndicator(trades[i].indicators, trades[i].tradeid, trades[i].with_main);
+  }
+  widget.setIndicatorSettings({{PlotSettings|safe}});
+
+
+  function chartreheight() {
+    var height = $('body').height() - $('#topNavBar').height() - $('#episecChartToolBar').height();
+    $('#tv_chart_container').height(height - 20);
+  }
+
+  // ===================== chart widget end =========================
+
+  // ===================== change chart style start =======================
+
+  $('#chartTypeMenu a').click(function () {
+    var type = $(this).data('type');
+    $('#chartTypeMenu a').removeClass('active');
+    $(this).addClass('active');
+    widget.setChartType(type);
+  });
+
+  // ===================== change chart style start =======================
+
+  // ===================== pricebarpattern start =======================
+
+  $('#pricebarPatternTable tbody td').click(function () {
+    // $('#pricebarPatternTable td').removeAttr('class');
+    // $(this).attr('class', 'table-active');
+    $.ajax({
+      url: "/recogpricebarpattern",
+      data: { 'patternname': $(this).data("name"), dashboard_id: dashboard_id },
+      dataType: "json",
+      success: function (data) {
+        var indexes = JSON.parse(data.indexes);
+        barpatternalert(data.dates, indexes, data.lows, data.highs);
+      }
+    });
+
+    $.ajax({
+      url: "/addpricebarpattern",
+      data: { 'patternname': $(this).data("name"), dashboard_id: dashboard_id },
+      success: function (data) {
+        refreshIndicatorTradingList();
+      }
+    });
+  });
+  
+  function barpatternalert(dates, indexes, lows, highs) {
+    widget.removeAllShapes();
+
+    for (var i = 0; i < indexes.length; i++) {
+      widget.createMultipointShape([{
+        index: indexes[i], price: highs[i]
+      }, {
+        index: indexes[i], price: lows[i]
+      }, {
+        index: indexes[i] - 1, price: (highs[i] + lows[i]) / 2
+      }], { shape: 'ellipse' });
+    }
+  }
+
+  // ===================== pricebarpattern end =======================
+
+  // ===================== chartpattern start =======================
+
+  $('#chartPatternTable td').click(function () {
+    $('#chartPatternTable td').removeAttr('class');
+    $(this).attr('class', 'table-active');
+
+    var patternname = $(this).data('pattern');
+    $.ajax({
+      url: "/recogchartpattern",
+      data: { 'patternname': patternname, dashboard_id: dashboard_id },
+      dataType: "json",
+      success: function (data) {
+        var fromindex = data.fromindex;
+        var toindex = data.toindex;
+        var maxval = data.maxval;
+        var minval = data.minval;
+
+        widget.removeAllShapes();
+
+        widget.createMultipointShape([{
+          index: fromindex, price: maxval
+        }, {
+          index: toindex, price: minval
+        }], { shape: 'rectangle' });
+      }
+    });
+
+    $.ajax({
+      url: "/addchartpattern",
+      data: { 'patternname': patternname, dashboard_id: dashboard_id },
+      success: function (data) {
+        refreshIndicatorTradingList();
+      }
+    });
+  });
+
+  // ===================== chartpattern start =======================
+
+  // ======================= setting start ==================
+
+  $('#mainsettingsave').click(function () {
+    var bullcolor = $("#color_bull").children('input').val();
+    var bearcolor = $("#color_bear").children('input').val();
+    $(".bullish").css("fill", bullcolor);
+    $(".bearish").css("fill", bearcolor);
+
+    $(".bullish").css("stroke", bullcolor);
+    $(".bearish").css("stroke", bearcolor);
+
+    $(".infobar_bullish").css("fill", bullcolor);
+    $(".infobar_bearish").css("fill", bearcolor);
+  });
+
+  $('#settingsave').click(function () {
+    
+    $.ajax({
+      url : "/indicatorsetting",
+      type : 'POST',
+      data : $('#indicatorsettingform').serialize(),
+      success: function (data) {
+          widget.setIndicatorSettings(data.settings);
+          widget.setTradingIndicator(data.trade.indicators, data.trade.tradeid, data.trade.with_main);
+      }
+    });
+  });
+
+  function settingViewCallback(tii_id) {
+    if(tii_id == 'main') {
+      $("#color_bull").children('input').val($(".bullish").css("fill"));
+      $("#color_bear").children('input').val($(".bearish").css("fill"));
+
+      $("div[id^='colorpicker_']").colorpicker();
+      $("#mainsettingdialog").modal();
+    }
+    else {
+      $.ajax({
+        url: "/indicatorsetting",
+        data: { 'tii_id': tii_id, 'dashboard_id': dashboard_id },
+        success: function (response) {
+          $("#settingview").html(response);
+          $("div[id^='colorpicker_']").colorpicker();
+          $("#settingdialog").modal();
+        }
+      });
+    }
+  }
+
+  // ======================= setting end ==================
+
+
+  // ========================= indicator start =====================
+
+  function refreshIndicatorTradingList(){
+    $.ajax({
+      url: "/refreshBacktestListPanel",
+      data: {dashboard_id: dashboard_id},
+      success: function(html) {
+        $('#tilistdiv').html(html);
+      }
+    });
+    backtest_bparam_showready = 0;
+    backtest_showready = 0;
+  }
+
+  $('#indicatorcategoryTabContent li').click(function () {
+    // var id = $(this).prop("id");
+    var indid = $(this).data("id");
+    // var indname = $(this).data("name");
+
+    var tid = $('#indicatorcategoryTabContent').data('tid');
+    if(tid == 'new'){
+      $.ajax({
+        url: "/addtradingindicator",
+        data: { 'indid': indid, 'dashboard_id': dashboard_id },
+        success: function(data) {
+          if( data == 'countlimit') {
+            alert("Trade count is limited!");
+          }
+          var ntid = data.trade_id;
+          var graph = data.graph;
+          var with_main = data.with_main;
+          widget.addTradingIndicator([graph], ntid, with_main);
+
+          refreshIndicatorTradingList();
+        }
+      });
+    }
+    else{
+      $.ajax({
+        url: "/addtradingindicatorindicator",
+        data: { 'indid': indid, 'trade_indicator_id': tid, 'dashboard_id': dashboard_id },
+        success: function(data) {
+          var ntid = data.trade_id;
+          var graph = data.graph;
+          widget.addIndicator(graph.data, graph.name, graph.id, ntid, graph.tii_id);
+          
+          refreshIndicatorTradingList();
+        }
+      });
+    }
+
+  });
+
+  function removeIndicator(tradeid, indid) {
+    $.ajax({
+      url: "/removetradingindicatorindicator",
+      data: { 'indid': indid, 'trade_indicator_id': tradeid },
+      success: function(data) {
+        refreshIndicatorTradingList();
+      }
+    });
+  }
+
+  function removePanel(tradeid) {
+    $.ajax({
+      url: "/removetradingindicator",
+      data: { 'trade_indicator_id': tradeid },
+      success: function(data) {
+        refreshIndicatorTradingList();        
+      }
+    });
+  }
+
+  $('#indicatordialoglink').click(function() {
+    $('#indicatorcategoryTabContent').data("tid", "new");
+    $('#indicatorcategoryTabContent li[data-comb="0"]').css("display", "block");
+  });
+
+  function requireAddIndicator(tradeid, with_main){
+    $('#indicatorcategoryTabContent').data("tid", tradeid);
+    if(with_main == 1){
+      $('#indicatorcategoryTabContent').data("tid", "new");
+    }
+    $('#indicatorcategoryTabContent li[data-comb="0"]').css("display", "none");
+    $('#indicatorsdialog').modal();
+  }
+
+  $(function () {
+    $('#indicatorcategoryTab li:first-child a').addClass('active');
+    $('#indicatorcategoryTabContent .tab-pane:first-child').addClass('active');
+  });
+  // ========================= indicator end =====================
+
+  // ======================= trade mode start =====================
+  function setTradeMode(){
+    refreshIndicatorTradingList();
+  }
+  // ======================= trade mode end =====================
+
+  // ======================= enter signal start =====================
+  $( "#enter_signal" ).change(function() {
+    $.ajax({
+      url: '/entersignalsave',
+      data: {'signal': $(this).val()},
+    });
+  });
+  // ======================= enter signal end =====================
+
+  // ======================= enter signal start =====================
+  $( "#backtest_btn" ).click(function() {
+    params = { 'period': nowperiod, 'bIntraday': bIntraday };
+
+    $.ajax({
+      url: '/backtest',
+      data: params,
+    });
+  });
+  // ======================= enter signal end =====================
+
+  // ======================= bandOver event start =================
+  function bandOver(date, index) {
+    if(backtest_showready) {
+      $('tr[id^="btrow_"]').each( function () {
+        var bt_id = $(this).data("id");
+        var clr = actmap[bt_id][index];
+        $('#attr_'+bt_id).css("background-color", clr);
+        if(acts[index] == 1){
+          $('#totalsignal').text('Enter');
+        }
+        else{
+          $('#totalsignal').text('Exit');
+        }
+      });
+    }
+  }
+  // ======================= bandOver event end =================
+
+  // ======================= sidebar control start =================
+  $('#sidebar-toggler').click( function (){
+    $('#sidebar').toggleClass("active");
+    $('#logopanel').toggleClass("active");
+    if($('#chartpanel').hasClass('col-md-7')){
+      $('#chartpanel').removeClass('col-md-7');
+      $('#chartpanel').addClass('col-md-9');
+    }
+    else{
+      $('#chartpanel').removeClass('col-md-9');
+      $('#chartpanel').addClass('col-md-7');
+    }
+    widget.resize();
+  });
+  // ======================= sidebar control end =================
+
+
+  // ======================= dashboard control start =================
+  $('#adddashboard').click( function (){
+    $.ajax({
+      url: '/dashboardsetting',
+      data: {dashboard_id:0},
+      success: function(html){
+        $("#commondialogtitle").html("Add New Dashboard.");
+        $("#commondialogview").html(html);
+        $("#dashboardsettingsave").attr("form", "dashboardsettingform");
+        $("#commondialog").modal();
+      }
+    });
+  });
+
+  $('#updatedashboard').click( function (){
+    $.ajax({
+      url: '/dashboardsetting',
+      data: {dashboard_id:dashboard_id},
+      success: function(html){
+        $("#commondialogtitle").html("Reset this Dashboard.");
+        $("#commondialogview").html(html);
+        $("#dashboardsettingsave").attr("form", "dashboardsettingform");
+        $("#commondialog").modal();
+      }
+    });
+  });
+  // ======================= dashboard control end =================
+</script>
+<!-- EpisecTradingView Widget END -->
+{% endblock %}

@@ -1,0 +1,65 @@
+<p>
+As you probably already know, oversold and overbought levels are used to determine those moments that can boast higher probability of a trend reversal. Indeed, no asset can grow forever. What has grown has to go back down, so is the law of the market. By identifying overbought/oversold positions you will identify periods when the trend reversal is more likely, thus getting an upper hand in trading.
+<br>
+However, it is worth remembering that the information provided by this indicator is not enough to use on its own. Buying and selling pressure, though helpful, is not directly connected to trend. Buyers can have an upper hand (according to BOP) and the asset will still lose in price. The opposite can also be true: sellers can have an upper hand (according to BOP), and the asset will still appreciate. Use this indicator carefully and combine it with other technical analysis tools: oscillators, trend-following and momentum indicators.
+</p>
+
+<div class="row paramrow">
+    <div class="col-sm-5 text-center">
+        <label for="overbought">
+            Overbought
+        </label>
+    </div>
+    <div class="col-sm-5 text-center">
+        <input id="overbought" name="ovb" value="{{ SignalInputs.ovb }}"/>
+    </div>
+</div>
+
+<div class="row paramrow mb-4">
+    <div class="col-sm-5 text-center">
+        <label for="oversold">
+            Oversold
+        </label>
+    </div>
+    <div class="col-sm-5 text-center">
+        <input id="oversold" name="ovs" value="{{ SignalInputs.ovs }}"/>
+    </div>
+</div>
+
+<button type="button" class="btn_signal" data-letter="{{ tii_letter }}">Trigger Signal</button>
+<button type="button" class="btn_optimal" data-letter="{{ tii_letter }}">Optimal Setting</button>
+
+<div class="row mt-4">
+    <div class="col-sm-12" id="winlossratio">
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-sm-12" id="bestparams_result">
+    </div>
+</div>
+<script>
+$('.btn_signal').click(function () {
+    $.ajax({
+        url: '/triggersignal/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}', ovb: $('#overbought').val(), ovs: $('#oversold').val()},
+        success: function(data) {
+            widget.createSignalShape(data.signal_graph);
+            $('#winlossratio').text('Win/Loss Ratio: ' + data.traderet.winlossratio);
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+
+$('.btn_optimal').click(function () {
+    $('#loadingOptTrade').removeClass("d-none");
+    $.ajax({
+        url: '/optimaltrade/' + $(this).data('letter'),
+        data: {dashboard_id: '{{ dashboard_id}}', tii_id: '{{ tii_id}}'},
+        success: function(data) {
+            $('#bestparams_result').html(data.html);
+            $('#loadingOptTrade').addClass("d-none");
+            $("#signaltab").animate({ scrollTop: $('#signaltab').height() }, 1000);
+        }
+    });
+})
+</script>

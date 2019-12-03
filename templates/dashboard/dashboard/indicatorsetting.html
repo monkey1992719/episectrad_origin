@@ -1,0 +1,75 @@
+<div class="spinner-container d-none" id="loadingOptTrade">
+    <div class="spinner-border spinner-centre" role="status">
+        <span class="sr-only">Backtesting...</span>
+    </div>
+</div>
+<form method="POST" action="/indicatorsetting" id="indicatorsettingform">
+{% csrf_token %}
+<input type="hidden" id="tii_id" name="tii_id" value="{{ tii_id }}">
+<input type="hidden" id="dashboard_id" name="dashboard_id" value="{{ dashboard_id }}">
+<div class="htabs">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#inputtab" role="tab" aria-expanded="true">Input</a>
+        </li>
+        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#signaltab" role="tab" aria-expanded="true">Trade signal</a>
+        </li>
+        <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#styletab" role="tab" aria-expanded="true">Style</a>
+        </li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane" id="inputtab" role="tabpanel" aria-expanded="true" style="max-height:300px;overflow-y:auto;overflow-x: hidden;">
+            {% for i in Inputs %}
+            <div class="row paramrow">
+                <div class="col-sm-5 text-center">
+                    <label for="input_{{ i.parameter }}">
+                        {{ i.parameter }}
+                    </label>
+                </div>
+                <div class="col-sm-5">
+                    {% if i.cand|length == 0 %}
+                        <input id="input_{{ i.parameter }}" name="input_{{ i.parameter }}" value="{{ i.value }}"/>
+                    {% else %}
+                        <select id="input_{{ i.parameter }}" name="input_{{ i.parameter }}" value="{{ i.value }}">
+                            {% for cand in i.cand %}
+                            <option value="{{cand}}" {% if cand == i.value %} selected {% endif %}>{{cand}}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+                <div class="col-sm-2">
+                    <button onclick="$('#input_{{ i.parameter }}').val('{{i.defvalue}}');" type="button">Reset</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="tab-pane" id="signaltab" role="tabpanel" aria-expanded="true" style="max-height:300px;overflow-y:auto;overflow-x: hidden;">
+            {% with "dashboard/dashboard/indicators/"|add:tii_letter|add:".html" as filename %}
+            {% include filename %}
+            {% endwith %}
+        </div>
+        <div class="tab-pane active" id="styletab" role="tabpanel" aria-expanded="true" style="max-height:300px;overflow-y:auto;overflow-x: hidden;">
+            {% for s in PlotSettings %}
+            <div class="row paramrow">
+                <div class="col-sm-4 text-center">
+                    <label for="color_{{ s.plot_id }}">
+                        {{ s.plotname }}
+                    </label>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group" id="colorpicker_{{ s.plot_id }}">
+                        <input type="hidden" class="form-control input-lg" id="color_{{ s.plot_id }}" name="color_{{ s.plot_id }}" value="{{ s.color }}" />
+                        <span class="input-group-append">
+                            <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button onclick="$('#colorpicker_{{ s.plot_id }}').colorpicker('setValue','{{s.defaultcolor}}');" type="button">Reset</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</form>
